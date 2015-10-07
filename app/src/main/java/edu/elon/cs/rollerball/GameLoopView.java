@@ -1,9 +1,13 @@
 package edu.elon.cs.rollerball;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.text.method.BaseKeyListener;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -17,6 +21,10 @@ public class GameLoopView extends SurfaceView implements SurfaceHolder.Callback{
     private Context context;
     //Location for the ball
     private float ballX, ballY;
+
+
+
+
 
     public GameLoopView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -64,6 +72,14 @@ public class GameLoopView extends SurfaceView implements SurfaceHolder.Callback{
         }
     }
 
+
+    public boolean onTouchEvent(MotionEvent event){
+        ballX = event.getX();
+        ballY = event.getY();
+        return true;
+    }
+
+
     private class GameLoopThread extends Thread {
 
         private boolean isRunning = false;
@@ -71,6 +87,7 @@ public class GameLoopView extends SurfaceView implements SurfaceHolder.Callback{
 
         //the ball
         private Ball ball;
+        private Background background;
 
         //the spot
         private Spot spot;
@@ -80,7 +97,9 @@ public class GameLoopView extends SurfaceView implements SurfaceHolder.Callback{
         private long nextUpdate;
 
         public GameLoopThread() {
+            background = new Background(context);
             ball = new Ball(context);
+            spot = new Spot(context);
 
             ballX = ball.x;
             ballY = ball.y;
@@ -115,7 +134,7 @@ public class GameLoopView extends SurfaceView implements SurfaceHolder.Callback{
                     lastTime = now;
 
                     // update/draw
-                    doUpdate(elapsed);
+//                    doUpdate(elapsed);
                     doDraw(canvas);
 
                     //updateFPS(now);
@@ -144,20 +163,21 @@ public class GameLoopView extends SurfaceView implements SurfaceHolder.Callback{
         /* THE GAME */
 
         // move all objects in the game
-        private void doUpdate(double elapsed) {
-            ball.doUpdate(elapsed, ballX, ballY);
-        }
+//        private void doUpdate(double elapsed) {
+//
+//            ball.doUpdate(elapsed, ballX, ballY);
+//        }
 
         // draw all objects in the game
         private void doDraw(Canvas canvas) {
 
-            // draw the background
-            canvas.drawColor(Color.argb(255, 126, 192, 238));
+            // draw the background and ball
 
-
-
-
+            background.doDraw(canvas);
+            spot.doDraw(canvas);
             ball.doDraw(canvas);
+
+
         }
     }
 
